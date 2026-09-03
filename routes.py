@@ -1,9 +1,8 @@
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
-from database import kursor, konekcija
+from database import kursor1, konekcija1
 from models import Korisnik
 from auth import hesuj_lozinku, provjeri_lozinku, napravi_token
-from auth_dependency import trenutni_korisnik
 
 router = APIRouter()
 
