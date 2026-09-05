@@ -9,20 +9,20 @@ router = APIRouter()
 @router.post("/registracija")
 def registruj_korisnika(korisnik: Korisnik):
     hash_lozinke = hesuj_lozinku(korisnik.lozinka)
-    kursor.execute(
+    kursor1.execute(
         "INSERT INTO korisnici (korisnicko_ime, lozinka_hash) VALUES (?, ?)",
         (korisnik.korisnicko_ime, hash_lozinke)
     )
-    konekcija.commit()
+    konekcija1.commit()
     return {"poruka": f"Registrovan korisnik: {korisnik.korisnicko_ime}"}
 
 @router.post("/login")
 def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    kursor.execute(
+    kursor1.execute(
         "SELECT lozinka_hash FROM korisnici WHERE korisnicko_ime = ?",
         (form_data.username,)
     )
-    red = kursor.fetchone()
+    red = kursor1.fetchone()
 
     if red is None:
         raise HTTPException(status_code=401, detail="Pogresno korisnicko ime ili lozinka")
@@ -34,3 +34,9 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
 
     token = napravi_token(form_data.username)
     return {"access_token": token, "token_type": "bearer"}
+
+@router.get("/korisnici")
+def prikazi_sve_korisnike():
+    kursor1.execute("SELECT * FROM korisnici")
+    rezultati = kursor1.fetchall()
+    return {"korisnici": rezultati}
