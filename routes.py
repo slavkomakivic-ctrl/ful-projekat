@@ -10,7 +10,7 @@ router = APIRouter()
 def registruj_korisnika(korisnik: Korisnik):
     hash_lozinke = hesuj_lozinku(korisnik.lozinka)
     kursor1.execute(
-        "INSERT INTO korisnici (korisnicko_ime, lozinka_hash) VALUES (?, ?)",
+        "INSERT INTO korisnici (korisnicko_ime, lozinka_hash) VALUES (%s, %s)",
         (korisnik.korisnicko_ime, hash_lozinke)
     )
     konekcija1.commit()
@@ -19,7 +19,7 @@ def registruj_korisnika(korisnik: Korisnik):
 @router.post("/login")
 def login(form_data: OAuth2PasswordRequestForm = Depends()):
     kursor1.execute(
-        "SELECT lozinka_hash FROM korisnici WHERE korisnicko_ime = ?",
+        "SELECT lozinka_hash FROM korisnici WHERE korisnicko_ime = %s",
         (form_data.username,)
     )
     red = kursor1.fetchone()

@@ -1,30 +1,46 @@
-import sqlite3
+from dotenv import load_dotenv
+import psycopg2
+import os
 
-konekcija1 = sqlite3.connect("korisnici.db", check_same_thread=False)
+load_dotenv()
+
+konekcija1 = psycopg2.connect(
+    dbname="ful_korisnici_db",
+    user="postgres",
+    password= os.getenv("SIFRA"),
+    host="localhost",
+    port="5432"
+    )
 kursor1 = konekcija1.cursor()
 
 kursor1.execute("""
     CREATE TABLE IF NOT EXISTS korisnici (
-        id INTEGER PRIMARY KEY,
+        id SERIAL PRIMARY KEY,
         korisnicko_ime TEXT UNIQUE,
         lozinka_hash TEXT
     )
 """)
 konekcija1.commit()
 
-konekcija = sqlite3.connect("baza_knjige_autori.db", check_same_thread=False)
+konekcija = psycopg2.connect(
+    dbname="ful_projekat_db",
+    user="postgres",
+    password= os.getenv("SIFRA"),
+    host="localhost",
+    port="5432"
+)
 kursor = konekcija.cursor()
 
 kursor.execute("""
     CREATE TABLE IF NOT EXISTS autori(
-        id INTEGER PRIMARY KEY,
+        id SERIAL PRIMARY KEY,
         ime TEXT
     )
 """)
 
 kursor.execute("""
     CREATE TABLE IF NOT EXISTS knjige (
-        id INTEGER PRIMARY KEY,
+        id SERIAL PRIMARY KEY,
         naslov TEXT,
         godina INTEGER,
         ocjena INTEGER,
