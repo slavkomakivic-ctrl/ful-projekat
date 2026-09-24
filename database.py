@@ -4,13 +4,18 @@ import os
 
 load_dotenv()
 
-konekcija1 = psycopg2.connect(
-    dbname="ful_korisnici_db",
-    user="postgres",
-    password= os.getenv("SIFRA"),
-    host="localhost",
-    port="5432"
-    )
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if DATABASE_URL:
+    konekcija1 = psycopg2.connect(DATABASE_URL)
+else:
+    konekcija1 = psycopg2.connect(
+        dbname="ful_korisnici_db",
+        user="postgres",
+        password= os.getenv("SIFRA"),
+        host="localhost",
+        port="5432"
+        )
 kursor1 = konekcija1.cursor()
 
 kursor1.execute("""
@@ -22,13 +27,16 @@ kursor1.execute("""
 """)
 konekcija1.commit()
 
-konekcija = psycopg2.connect(
-    dbname="ful_projekat_db",
-    user="postgres",
-    password= os.getenv("SIFRA"),
-    host="localhost",
-    port="5432"
-)
+if DATABASE_URL:
+    konekcija = psycopg2.connect(DATABASE_URL)
+else:
+    konekcija = psycopg2.connect(
+        dbname="ful_projekat_db",
+        user="postgres",
+        password=os.getenv("SIFRA"),
+        host="localhost",
+        port="5432"
+    )
 kursor = konekcija.cursor()
 
 kursor.execute("""
